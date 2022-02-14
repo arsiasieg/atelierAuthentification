@@ -1,10 +1,8 @@
 package com.wcs.atelierauthentification.dto;
 
-import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@Entity
 public class UserDto {
 	@NotNull
 	@Size(min = 3, max = 50)

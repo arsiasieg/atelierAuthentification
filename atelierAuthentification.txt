@@ -1,0 +1,28 @@
+DEPENDANCES : JPA, MySQL, Web, Validator, Security
+app.properties
+
+REGISTER :
+
+Creation entity :
+	-> user
+	-> role implements GrantedAuthority
+	-> ERole (enum)
+
+Creation repository (interface) :
+	-> user extends JpaRepository
+		--> existByUsername
+		--> existByEmail
+		--> findByUsername
+	-> role extends JpaRepository
+		--> findByName(ERole name);
+
+Creation security:
+	-> WebSecurityConfig extends WebSecurityConfigurerAdapter
+		--> configur(HttpSecurity)
+
+
+Creation controller
+	-> user
+		--> @Post create
+			---> checker si le username et email n'existe pas déjà
+			---> créer le user et le 'set'	-> pour le
