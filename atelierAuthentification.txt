@@ -15,14 +15,66 @@ Creation repository (interface) :
 		--> findByUsername
 	-> role extends JpaRepository
 		--> findByName(ERole name);
+		
+Creation dto :
+	-> userDto
 
 Creation security:
 	-> WebSecurityConfig extends WebSecurityConfigurerAdapter
 		--> configur(HttpSecurity)
 
-
 Creation controller
 	-> user
-		--> @Post create
+		--> @Post sign-up
 			---> checker si le username et email n'existe pas déjà
-			---> créer le user et le 'set'	-> pour le
+			---> créer le user et le 'set'
+		--> @Post sign-in
+			---> comparaison du username/password avec la DB
+Creation dto
+	-> ConnectionDto	
+
+
+Creation security.service :
+	-> userDetailsImpl implements UserDetails	: user que Spring peut comprendre et gérer
+		--> build : construction du UserDetailsImpl avec le user
+	-> userDetailsServiceImpl implements UserDetailsService
+		--> loadUserByUsername
+		
+		
+WebSecurityConfig :
+	-> autowired userDetailsServicesImpl
+	-> configure (AuthenticationManagerBuilder) : comment spring va devoir gérer les données du userDetailsImpl
+	-> authenticationManager : permet d'utiliser l'authenficationmanager ailleurs que dans le webSecurity
+	
+	
+Controller user :
+	-> sign-in
+		--> authentificationManager.authenticate
+		--> securityContextHolder
+
+Dependance pour le token:
+	<dependency>
+    		<groupId>io.jsonwebtoken</groupId>
+    		<artifactId>jjwt</artifactId>
+    		<version>0.9.1</version>
+	</dependency>
+	
+App.properties :
+	-> [nom_du_projet].jwtSecret= @ngul4r0TOP! <-clé random
+	-> [nom_du_projet].jwtExpirationMs= 86400000
+	
+Creation JWTUtils
+	-> generateToken
+	
+Controller user :
+	->sign-in
+		--> génération du token (jwtUtils.generateToken())
+		
+Création dto:
+	->ConnectionResponseDto : username, token, authorities
+	
+	
+Controller user :
+	-> sign-in
+		--> userDetailsImpl = auth.getPrincipal()
+		--> return new ConnectionResponseDto(username, token, roles)
